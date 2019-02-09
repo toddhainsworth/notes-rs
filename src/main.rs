@@ -27,12 +27,9 @@ fn main() {
     // Init command
     if args.len() == 2 && args[1] == "init" {
         if !exists(notes_dir.as_str()) {
-            match touch::dir::create(notes_dir.as_str()) {
-                Ok(_) => process::exit(0),
-                Err(e) => {
-                    eprintln!("Failed to create notes directory: {}", e);
-                    process::exit(1);
-                }
+            if let Err(e) = touch::dir::create(notes_dir.as_str()) {
+                eprintln!("Failed to create notes directory: {}", e);
+                process::exit(1);
             }
         } else {
             eprintln!("Notes folder already exists");
@@ -46,13 +43,12 @@ fn main() {
         cmd.arg(&note_path);
 
         match cmd.spawn() {
-            Ok(mut ch) => match ch.wait() {
-                Ok(_) => process::exit(0),
-                Err(e) => {
+            Ok(mut ch) => {
+                if let Err(e) = ch.wait() {
                     eprintln!("Failed to open note {}: {}", note_path, e);
                     process::exit(1);
                 }
-            },
+            }
             Err(e) => {
                 eprintln!("Could not spawn editor process \"{}\": {}", editor, e);
                 process::exit(1);
@@ -79,6 +75,8 @@ fn main() {
             }
         }
     }
+
+    process::exit(0);
 }
 
 fn get_notes_dir() -> String {
