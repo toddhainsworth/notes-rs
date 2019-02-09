@@ -5,8 +5,6 @@ authors = ["Todd Hainsworth <hainsworth.todd@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-clap = "2.32.0"
 touch = "0.0.1"
 dirs = "1.0"
 chrono = "0.4.6"
-open = "1.2.2"

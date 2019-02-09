@@ -1,7 +1,5 @@
 extern crate chrono;
-extern crate clap;
 extern crate dirs;
-extern crate open;
 extern crate touch;
 
 use chrono::offset::Local;
