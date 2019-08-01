@@ -58,11 +58,15 @@ fn main() {
         match std::fs::read_dir(&notes_dir) {
             Ok(dir_entries) => {
                 dir_entries.for_each(|e| {
-                    // TODO: get rid of this unwrap
-                    let en = e.unwrap();
-
-                    if let Ok(created) = get_created_at(&en) {
-                        println!("{} - {:?}", created.format("%d/%m/%Y %T"), en.path());
+                    if let Ok(en) = e {
+                        match get_created_at(&en) {
+                            Ok(created) => {
+                                println!("{} - {:?}", created.format("%d/%m/%Y %T"), en.path())
+                            }
+                            // TODO: On linux we can't get creation time yet:
+                            // https://github.com/rust-lang/rust/blob/master/src/libstd/sys/unix/fs.rs#L161
+                            Err(_) => println!("{:?}", en.path()),
+                        }
                     }
                 });
                 process::exit(0);
